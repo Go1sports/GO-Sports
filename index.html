@@ -75,6 +75,61 @@
             margin-top: 6px;
         }
 
+        /* صندوق الترحيب الافتراضي (اختر قناة للبدء) */
+        .welcome-box {
+            background: linear-gradient(to bottom, #032a31, #021e23);
+            border: 1px solid rgba(0, 242, 195, 0.15);
+            border-radius: 16px;
+            padding: 40px 20px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+        }
+
+        .welcome-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #00f2c3, #00a3e0);
+            border-radius: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 8px;
+            box-shadow: 0 4px 15px rgba(0, 242, 195, 0.2);
+        }
+
+        .welcome-icon svg {
+            width: 32px;
+            height: 32px;
+            fill: #021e23;
+        }
+
+        .welcome-box h3 {
+            margin: 0;
+            font-size: 20px;
+            font-weight: bold;
+            color: #ffffff;
+        }
+
+        .welcome-box p {
+            margin: 0;
+            font-size: 12px;
+            color: #71878b;
+            line-height: 1.6;
+            max-width: 260px;
+        }
+
+        .welcome-status {
+            font-size: 11px;
+            color: #00f2c3;
+            margin-top: 4px;
+            font-weight: bold;
+        }
+
+        /* صندوق مشغل الفيديو */
         .player-box {
             background-color: #032a31;
             border: 1px solid rgba(0, 242, 195, 0.1);
@@ -82,6 +137,7 @@
             padding: 8px;
             position: relative;
             z-index: 10;
+            display: none;
         }
 
         .video-container {
@@ -91,7 +147,6 @@
             overflow: hidden;
         }
 
-        /* تخصيص ألوان مشغل Plyr ليتطابق مع هويتك البصرية */
         :root {
             --plyr-color-main: #00f2c3;
             --plyr-video-control-color: #ffffff;
@@ -102,11 +157,37 @@
             border-radius: 12px;
         }
 
+        .servers-container {
+            display: flex;
+            gap: 8px;
+            margin-top: 10px;
+            padding: 0 4px;
+        }
+
+        .server-btn {
+            flex: 1;
+            background-color: rgba(113, 135, 139, 0.1);
+            color: #71878b;
+            border: 1px solid rgba(113, 135, 139, 0.2);
+            padding: 6px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .server-btn.active {
+            background-color: rgba(0, 242, 195, 0.15);
+            color: #00f2c3;
+            border-color: #00f2c3;
+        }
+
         .player-details {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-top: 10px;
+            margin-top: 12px;
             padding: 0 4px;
         }
 
@@ -338,6 +419,9 @@
             font-size: 9px;
             color: #71878b;
             display: block;
+            text-transform: uppercase;
+            font-weight: 600;
+            letter-spacing: 0.5px;
         }
 
         .card-info p {
@@ -360,15 +444,31 @@
             <div class="subtitle">مشاهدة المباريات بسهولة على الموبايل</div>
         </div>
 
-        <div class="player-box">
+        <div id="welcome-box" class="welcome-box">
+            <div class="welcome-icon">
+                <svg viewBox="0 0 24 24">
+                    <path d="M12 22C6.477 22 2 17.523 2 12S6.477 2 12 2s10 4.477 10 10-4.477 10-10 10zm1-11V7h-2v4H7v2h4v4h2v-4h4v-2h-4z"/>
+                </svg>
+            </div>
+            <h3>اختر قناة للبدء</h3>
+            <p>تصفح القنوات أدناه واضغط على أي واحدة لتبدأ المشاهدة فوراً</p>
+            <span class="welcome-status">البث مباشر الآن</span>
+        </div>
+
+        <div id="player-box" class="player-box">
             <div class="video-container">
                 <video id="live-player" playsinline controls></video>
             </div>
 
+            <div class="servers-container">
+                <button id="btn-srv1" onclick="changeServer(1)" class="server-btn active">Servers 1</button>
+                <button id="btn-srv2" onclick="changeServer(2)" class="server-btn">Servers 2</button>
+            </div>
+
             <div class="player-details">
-                <span class="views-tag">👁️ <span id="view-count">120</span> مباشر</span>
+                <span class="views-tag">👁️ <span id="view-count">0</span> مباشر</span>
                 <div class="channel-info">
-                    <h2 id="current-channel-title">Sports 1</h2>
+                    <h2 id="current-channel-title">اسم القناة</h2>
                 </div>
             </div>
         </div>
@@ -421,33 +521,43 @@
     <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
 
     <script>
+        // مصفوفة البيانات بعد تحديث وسم كأس العالم ليكون قريباً Soon بدلاً من Premium
         const channels = [
             // ====== قسم البنفسجية ======
-            { id: 1, name: "Sports 1", category: "all", url: "https://pub-5d579cce1f8f4f8faf00f60ef6a6b791.r2.dev/Bein1.m3u8" },
-            { id: 2, name: "Sports 2", category: "all", url: "https://pub-5d579cce1f8f4f8faf00f60ef6a6b791.r2.dev/Bein2.m3u8" },
-            { id: 3, name: "Sports 3", category: "all", url: "https://pub-5d579cce1f8f4f8faf00f60ef6a6b791.r2.dev/Bein3.m3u8" },
-            { id: 4, name: "Sports 4", category: "all", url: "https://pub-5d579cce1f8f4f8faf00f60ef6a6b791.r2.dev/Bein4.m3u8" },
-            { id: 5, name: "Sports 5", category: "all", url: "https://pub-5d579cce1f8f4f8faf00f60ef6a6b791.r2.dev/Bein5.m3u8" },
-            { id: 6, name: "Sports 6", category: "all", url: "https://pub-5d579cce1f8f4f8faf00f60ef6a6b791.r2.dev/Bein6.m3u8" },
+            { id: 1, name: "Sports 1", tag: "Premium", category: "all", url: "https://pub-5d579cce1f8f4f8faf00f60ef6a6b791.r2.dev/Bein1.m3u8", url2: "https://vjs.zencdn.net/v/oceans.mp4?id=bein1" },
+            { id: 2, name: "Sports 2", tag: "Premium", category: "all", url: "https://pub-5d579cce1f8f4f8faf00f60ef6a6b791.r2.dev/Bein2.m3u8", url2: "https://vjs.zencdn.net/v/oceans.mp4?id=bein2" },
+            { id: 3, name: "Sports 3", tag: "Premium", category: "all", url: "https://pub-5d579cce1f8f4f8faf00f60ef6a6b791.r2.dev/Bein3.m3u8", url2: "https://vjs.zencdn.net/v/oceans.mp4?id=bein3" },
+            { id: 4, name: "Sports 4", tag: "Premium", category: "all", url: "https://pub-5d579cce1f8f4f8faf00f60ef6a6b791.r2.dev/Bein4.m3u8", url2: "https://vjs.zencdn.net/v/oceans.mp4?id=bein4" },
+            { id: 5, name: "Sports 5", tag: "Premium", category: "all", url: "https://pub-5d579cce1f8f4f8faf00f60ef6a6b791.r2.dev/Bein5.m3u8", url2: "https://vjs.zencdn.net/v/oceans.mp4?id=bein5" },
+            { id: 6, name: "Sports 6", tag: "Premium", category: "all", url: "https://pub-5d579cce1f8f4f8faf00f60ef6a6b791.r2.dev/Bein6.m3u8", url2: "https://vjs.zencdn.net/v/oceans.mp4?id=bein6" },
 
             // ====== قسم ألكاس ======
-            { id: 7, name: "ألكاس 1", category: "alkass", url: "https://vjs.zencdn.net/v/oceans.mp4?id=7" },
-            { id: 8, name: "ألكاس 2", category: "alkass", url: "https://vjs.zencdn.net/v/oceans.mp4?id=8" },
-            { id: 9, name: "ألكاس 3", category: "alkass", url: "https://vjs.zencdn.net/v/oceans.mp4?id=9" },
-            { id: 10, name: "ألكاس 4", category: "alkass", url: "https://vjs.zencdn.net/v/oceans.mp4?id=10" },
-            { id: 11, name: "ألكاس 5", category: "alkass", url: "https://vjs.zencdn.net/v/oceans.mp4?id=11" },
-            { id: 12, name: "ألكاس 6", category: "alkass", url: "https://vjs.zencdn.net/v/oceans.mp4?id=12" },
+            { id: 7, name: "ألكاس 1", tag: "Alkass", category: "alkass", url: "https://vjs.zencdn.net/v/oceans.mp4?id=7-s1", url2: "https://vjs.zencdn.net/v/oceans.mp4?id=7-s2" },
+            { id: 8, name: "ألكاس 2", tag: "Alkass", category: "alkass", url: "https://vjs.zencdn.net/v/oceans.mp4?id=8-s1", url2: "https://vjs.zencdn.net/v/oceans.mp4?id=8-s2" },
+            { id: 9, name: "ألكاس 3", tag: "Alkass", category: "alkass", url: "https://vjs.zencdn.net/v/oceans.mp4?id=9-s1", url2: "https://vjs.zencdn.net/v/oceans.mp4?id=9-s2" },
+            { id: 10, name: "ألكاس 4", tag: "Alkass", category: "alkass", url: "https://vjs.zencdn.net/v/oceans.mp4?id=10-s1", url2: "https://vjs.zencdn.net/v/oceans.mp4?id=10-s2" },
+            { id: 11, name: "ألكاس 5", tag: "Alkass", category: "alkass", url: "https://vjs.zencdn.net/v/oceans.mp4?id=11-s1", url2: "https://vjs.zencdn.net/v/oceans.mp4?id=11-s2" },
+            { id: 12, name: "ألكاس 6", tag: "Alkass", category: "alkass", url: "https://vjs.zencdn.net/v/oceans.mp4?id=12-s1", url2: "https://vjs.zencdn.net/v/oceans.mp4?id=12-s2" },
 
             // ====== قسم ألوان ======
-            { id: 13, name: "ألوان 1", category: "alwan", url: "https://vjs.zencdn.net/v/oceans.mp4?id=13" },
-            { id: 14, name: "ألوان 2", category: "alwan", url: "https://vjs.zencdn.net/v/oceans.mp4?id=14" },
-            { id: 15, name: "ألوان 3", category: "alwan", url: "https://vjs.zencdn.net/v/oceans.mp4?id=15" },
-            { id: 16, name: "ألوان 4", category: "alwan", url: "https://vjs.zencdn.net/v/oceans.mp4?id=16" },
-            { id: 17, name: "ألوان 5", category: "alwan", url: "https://vjs.zencdn.net/v/oceans.mp4?id=17" },
-            { id: 18, name: "ألوان 6", category: "alwan", url: "https://vjs.zencdn.net/v/oceans.mp4?id=18" }
+            { id: 13, name: "ألوان 1", tag: "Alwan", category: "alwan", url: "https://vjs.zencdn.net/v/oceans.mp4?id=13-s1", url2: "https://vjs.zencdn.net/v/oceans.mp4?id=13-s2" },
+            { id: 14, name: "ألوان 2", tag: "Alwan", category: "alwan", url: "https://vjs.zencdn.net/v/oceans.mp4?id=14-s1", url2: "https://vjs.zencdn.net/v/oceans.mp4?id=14-s2" },
+            { id: 15, name: "ألوان 3", tag: "Alwan", category: "alwan", url: "https://vjs.zencdn.net/v/oceans.mp4?id=15-s1", url2: "https://vjs.zencdn.net/v/oceans.mp4?id=15-s2" },
+            { id: 16, name: "ألوان 4", tag: "Alwan", category: "alwan", url: "https://vjs.zencdn.net/v/oceans.mp4?id=16-s1", url2: "https://vjs.zencdn.net/v/oceans.mp4?id=16-s2" },
+            { id: 17, name: "ألوان 5", tag: "Alwan", category: "alwan", url: "https://vjs.zencdn.net/v/oceans.mp4?id=17-s1", url2: "https://vjs.zencdn.net/v/oceans.mp4?id=17-s2" },
+            { id: 18, name: "ألوان 6", tag: "Alwan", category: "alwan", url: "https://vjs.zencdn.net/v/oceans.mp4?id=18-s1", url2: "https://vjs.zencdn.net/v/oceans.mp4?id=18-s2" },
+
+            // ====== قسم كأس العالم (تم التحديث هنا ليكون قريباً Soon) ======
+            { id: 19, name: "كأس العالم 1", tag: "قريباً Soon", category: "worldcup", url: "https://vjs.zencdn.net/v/oceans.mp4?id=wc1-s1", url2: "https://vjs.zencdn.net/v/oceans.mp4?id=wc1-s2" },
+            { id: 20, name: "كأس العالم 2", tag: "قريباً Soon", category: "worldcup", url: "https://vjs.zencdn.net/v/oceans.mp4?id=wc2-s1", url2: "https://vjs.zencdn.net/v/oceans.mp4?id=wc2-s2" },
+            { id: 21, name: "كأس العالم 3", tag: "قريباً Soon", category: "worldcup", url: "https://vjs.zencdn.net/v/oceans.mp4?id=wc3-s1", url2: "https://vjs.zencdn.net/v/oceans.mp4?id=wc3-s2" },
+            { id: 22, name: "كأس العالم 4", tag: "قريباً Soon", category: "worldcup", url: "https://vjs.zencdn.net/v/oceans.mp4?id=wc4-s1", url2: "https://vjs.zencdn.net/v/oceans.mp4?id=wc4-s2" },
+            { id: 23, name: "كأس العالم 5", tag: "قريباً Soon", category: "worldcup", url: "https://vjs.zencdn.net/v/oceans.mp4?id=wc5-s1", url2: "https://vjs.zencdn.net/v/oceans.mp4?id=wc5-s2" },
+            { id: 24, name: "كأس العالم 6", tag: "قريباً Soon", category: "worldcup", url: "https://vjs.zencdn.net/v/oceans.mp4?id=wc6-s1", url2: "https://vjs.zencdn.net/v/oceans.mp4?id=wc6-s2" }
         ];
 
-        let currentChannel = channels[0]; 
+        let currentChannel = null; 
+        let currentServer = 1; 
         let hls = null;
 
         // تهيئة مشغل Plyr
@@ -473,7 +583,7 @@
                 card.innerHTML = `
                     <div class="fav-star">☆</div>
                     <div class="card-info">
-                        <span>${channel.category.toUpperCase()}</span>
+                        <span>${channel.tag}</span>
                         <p>${channel.name}</p>
                     </div>
                     <div class="play-button-circle">▶</div>
@@ -486,8 +596,25 @@
             const channel = channels.find(c => c.id === id);
             if (channel) {
                 currentChannel = channel;
+                
+                document.getElementById('welcome-box').style.display = 'none';
+                document.getElementById('player-box').style.display = 'block';
+                
                 document.getElementById('current-channel-title').innerText = channel.name;
-                loadStream(currentChannel.url);
+                
+                const streamUrl = currentServer === 1 ? channel.url : (channel.url2 || channel.url);
+                loadStream(streamUrl);
+            }
+        }
+
+        function changeServer(serverNumber) {
+            currentServer = serverNumber;
+            
+            document.getElementById('btn-srv1').classList.toggle('active', serverNumber === 1);
+            document.getElementById('btn-srv2').classList.toggle('active', serverNumber === 2);
+            
+            if (currentChannel) {
+                playChannel(currentChannel.id);
             }
         }
 
@@ -560,11 +687,8 @@
             renderChannels(filtered);
         }
 
-        // تشغيل الفلتر الأولي تلقائياً
+        // تهيئة الفلتر الافتراضي عند تحميل الصفحة ليظهر القسم الأول
         filterCategory('all', document.querySelector('.tab-btn'));
-        
-        // تشغيل أول قناة تلقائياً بعد نصف ثانية من التحميل
-        setTimeout(() => { playChannel(1); }, 500);
     </script>
 </body>
 </html>
