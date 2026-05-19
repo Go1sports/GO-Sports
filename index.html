@@ -75,7 +75,6 @@
             margin-top: 6px;
         }
 
-        /* صندوق الترحيب الافتراضي (اختر قناة للبدء) */
         .welcome-box {
             background: linear-gradient(to bottom, #032a31, #021e23);
             border: 1px solid rgba(0, 242, 195, 0.15);
@@ -129,7 +128,6 @@
             font-weight: bold;
         }
 
-        /* صندوق مشغل الفيديو */
         .player-box {
             background-color: #032a31;
             border: 1px solid rgba(0, 242, 195, 0.1);
@@ -495,6 +493,7 @@
                 <button onclick="filterCategory('all', this)" class="tab-btn active">البنفسجية</button>
                 <button onclick="filterCategory('alkass', this)" class="tab-btn">Alkass</button>
                 <button onclick="filterCategory('alwan', this)" class="tab-btn">Alwan</button>
+                <button onclick="filterCategory('mbc', this)" class="tab-btn">MBC</button>
                 <button onclick="filterCategory('worldcup', this)" class="tab-btn">كأس العالم</button>
             </div>
         </div>
@@ -521,7 +520,6 @@
     <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
 
     <script>
-        // مصفوفة البيانات بعد تحديث وسم كأس العالم ليكون قريباً Soon بدلاً من Premium
         const channels = [
             // ====== قسم البنفسجية ======
             { id: 1, name: "Sports 1", tag: "Premium", category: "all", url: "https://pub-5d579cce1f8f4f8faf00f60ef6a6b791.r2.dev/Bein1.m3u8", url2: "https://s1.marketplace-io-none-kode-steeeee.lol//b1_1080/tracks-v1a1/mono.m3u8?remote=169.224.32.214&token=e22daf2dc3f31a43ab19ffa1f14d30f131997bcd-10fb5b01605b8b54a7b2801cd7c6f36f-1779229472-1779218672" },
@@ -531,13 +529,13 @@
             { id: 5, name: "Sports 5", tag: "Premium", category: "all", url: "https://pub-5d579cce1f8f4f8faf00f60ef6a6b791.r2.dev/Bein5.m3u8", url2: "https://vjs.zencdn.net/v/oceans.mp4?id=bein5" },
             { id: 6, name: "Sports 6", tag: "Premium", category: "all", url: "https://pub-5d579cce1f8f4f8faf00f60ef6a6b791.r2.dev/Bein6.m3u8", url2: "https://vjs.zencdn.net/v/oceans.mp4?id=bein6" },
 
-            // ====== قسم ألكاس ======
-            { id: 7, name: "ألكاس 1", tag: "Alkass", category: "alkass", url: "https://vjs.zencdn.net/v/oceans.mp4?id=7-s1", url2: "https://vjs.zencdn.net/v/oceans.mp4?id=7-s2" },
-            { id: 8, name: "ألكاس 2", tag: "Alkass", category: "alkass", url: "https://vjs.zencdn.net/v/oceans.mp4?id=8-s1", url2: "https://vjs.zencdn.net/v/oceans.mp4?id=8-s2" },
-            { id: 9, name: "ألكاس 3", tag: "Alkass", category: "alkass", url: "https://vjs.zencdn.net/v/oceans.mp4?id=9-s1", url2: "https://vjs.zencdn.net/v/oceans.mp4?id=9-s2" },
-            { id: 10, name: "ألكاس 4", tag: "Alkass", category: "alkass", url: "https://vjs.zencdn.net/v/oceans.mp4?id=10-s1", url2: "https://vjs.zencdn.net/v/oceans.mp4?id=10-s2" },
-            { id: 11, name: "ألكاس 5", tag: "Alkass", category: "alkass", url: "https://vjs.zencdn.net/v/oceans.mp4?id=11-s1", url2: "https://vjs.zencdn.net/v/oceans.mp4?id=11-s2" },
-            { id: 12, name: "ألكاس 6", tag: "Alkass", category: "alkass", url: "https://vjs.zencdn.net/v/oceans.mp4?id=12-s1", url2: "https://vjs.zencdn.net/v/oceans.mp4?id=12-s2" },
+            // ====== قسم ألكاس (تم تحديث السيرفر 1 و السيرفر 2 بالكامل بالتسلسل) ======
+            { id: 7, name: "ألكاس 1", tag: "Alkass", category: "alkass", url: "https://bladisport.lovable.app/api/public/stream?url=https%3A%2F%2Fliveeu-gcp.alkassdigital.net%2Falkass1-p%2F20260519T133615Z%2Fmux_video_1080p_ts%2Findex-1.m3u8", url2: "https://bladisport.lovable.app/api/public/stream?url=https%3A%2F%2Fliveeu-gcp.alkassdigital.net%2Falkass1-p%2F20260519T133615Z%2Fmux_video_360p_ts%2Findex-1.m3u8" },
+            { id: 8, name: "ألكاس 2", tag: "Alkass", category: "alkass", url: "https://bladisport.lovable.app/api/public/stream?url=https%3A%2F%2Fliveeu-gcp.alkassdigital.net%2Falkass2-p%2F20260515T031806Z%2Fmux_video_1080p_ts%2Findex-1.m3u8", url2: "https://bladisport.lovable.app/api/public/stream?url=https%3A%2F%2Fliveeu-gcp.alkassdigital.net%2Falkass2-p%2F20260515T031806Z%2Fmux_video_360p_ts%2Findex-1.m3u8" },
+            { id: 9, name: "ألكاس 3", tag: "Alkass", category: "alkass", url: "https://bladisport.lovable.app/api/public/stream?url=https%3A%2F%2Fliveeu-gcp.alkassdigital.net%2Falkass3-p%2F20260515T025104Z%2Fmux_video_1080p_ts%2Findex-1.m3u8", url2: "https://bladisport.lovable.app/api/public/stream?url=https%3A%2F%2Fliveeu-gcp.alkassdigital.net%2Falkass3-p%2F20260515T025104Z%2Fmux_video_360p_ts%2Findex-1.m3u8" },
+            { id: 10, name: "ألكاس 4", tag: "Alkass", category: "alkass", url: "https://bladisport.lovable.app/api/public/stream?url=https%3A%2F%2Fliveeu-gcp.alkassdigital.net%2Falkass4-p%2F20260517T230208Z%2Fmux_video_1080p_ts%2Findex-1.m3u8", url2: "https://bladisport.lovable.app/api/public/stream?url=https%3A%2F%2Fliveeu-gcp.alkassdigital.net%2Falkass4-p%2F20260517T230208Z%2Fmux_video_360p_ts%2Findex-1.m3u8" },
+            { id: 11, name: "ألكاس 5", tag: "Alkass", category: "alkass", url: "https://bladisport.lovable.app/api/public/stream?url=https%3A%2F%2Fliveeu-gcp.alkassdigital.net%2Falkass5-p%2F20260515T023904Z%2Fmux_video_1080p_ts%2Findex-1.m3u8", url2: "https://bladisport.lovable.app/api/public/stream?url=https%3A%2F%2Fliveeu-gcp.alkassdigital.net%2Falkass5-p%2F20260515T023904Z%2Fmux_video_360p_ts%2Findex-1.m3u8" },
+            { id: 12, name: "ألكاس 6", tag: "Alkass", category: "alkass", url: "https://bladisport.lovable.app/api/public/stream?url=https%3A%2F%2Fliveeu-gcp.alkassdigital.net%2Falkass6-p%2F20260515T032106Z%2Fmux_video_1080p_ts%2Findex-1.m3u8", url2: "https://bladisport.lovable.app/api/public/stream?url=https%3A%2F%2Fliveeu-gcp.alkassdigital.net%2Falkass6-p%2F20260515T032106Z%2Fmux_video_360p_ts%2Findex-1.m3u8" },
 
             // ====== قسم ألوان ======
             { id: 13, name: "ألوان 1", tag: "Alwan", category: "alwan", url: "https://vjs.zencdn.net/v/oceans.mp4?id=13-s1", url2: "https://vjs.zencdn.net/v/oceans.mp4?id=13-s2" },
@@ -546,11 +544,20 @@
             { id: 16, name: "ألوان 4", tag: "Alwan", category: "alwan", url: "https://vjs.zencdn.net/v/oceans.mp4?id=16-s1", url2: "https://vjs.zencdn.net/v/oceans.mp4?id=16-s2" },
             { id: 17, name: "ألوان 5", tag: "Alwan", category: "alwan", url: "https://vjs.zencdn.net/v/oceans.mp4?id=17-s1", url2: "https://vjs.zencdn.net/v/oceans.mp4?id=17-s2" },
             { id: 18, name: "ألوان 6", tag: "Alwan", category: "alwan", url: "https://vjs.zencdn.net/v/oceans.mp4?id=18-s1", url2: "https://vjs.zencdn.net/v/oceans.mp4?id=18-s2" },
+            
+            // ====== قسم MBC ======
+            { id: 25, name: "MBC 1", tag: "Live", category: "mbc", url: "https://bladisport.lovable.app/api/public/stream?url=https%3A%2F%2Fshd-gcp-live.edgenextcdn.net%2Flive%2Fbitmovin-mbc-1-na%2Feec141533c90dd34722c503a296dd0d8%2Fmanifest%2Fvideo%2F1080p2400kbps%2Fvideo.m3u8", url2: "" },
+            { id: 26, name: "MBC 2", tag: "Live", category: "mbc", url: "https://vjs.zencdn.net/v/oceans.mp4?id=mbc2", url2: "" },
+            { id: 27, name: "MBC 3", tag: "Live", category: "mbc", url: "https://bladisport.lovable.app/api/public/stream?url=https%3A%2F%2Fshd-gcp-live.edgenextcdn.net%2Flive%2Fbitmovin-mbc-3-usa%2F5d58265a862a476dc7f97694addb5ded%2Fmanifest%2Fvideo%2F1080p2400kbps%2Fvideo.m3u8", url2: "" },
+            { id: 28, name: "MBC 4", tag: "Live", category: "mbc", url: "https://bladisport.lovable.app/api/public/stream?url=https%3A%2F%2Fshd-gcp-live.edgenextcdn.net%2Flive%2Fbitmovin-mbc-4%2F24f134f1cd63db9346439e96b86ca6ed%2Fmanifest%2Fvideo%2F1080p2400kbps%2Fvideo.m3u8", url2: "" },
+            { id: 29, name: "MBC 5", tag: "Live", category: "mbc", url: "https://bladisport.lovable.app/api/public/stream?url=https%3A%2F%2Fshd-gcp-live.edgenextcdn.net%2Flive%2Fbitmovin-mbc-5%2Fee6b000cee0629411b666ab26cb13e9b%2Fmanifest%2Fvideo%2F1080p2400kbps%2Fvideo.m3u8", url2: "" },
+            { id: 30, name: "MBC مصر 2", tag: "Live", category: "mbc", url: "https://bladisport.lovable.app/api/public/stream?url=https%3A%2F%2Fshd-gcp-live.edgenextcdn.net%2Flive%2Fbitmovin-mbc-masr-2%2F754931856515075b0aabf0e583495c68%2Fmanifest%2Fvideo%2F1080p2400kbps%2Fvideo.m3u8", url2: "" },
+            { id: 31, name: "MBC العراق", tag: "Live", category: "mbc", url: "https://bladisport.lovable.app/api/public/stream?url=https%3A%2F%2Fshd-gcp-live.edgenextcdn.net%2Flive%2Fbitmovin-mbc-iraq%2Fe38c44b1b43474e1c39cb5b90203691e%2Fmanifest%2Fvideo%2F1080p2400kbps%2Fvideo.m3u8", url2: "" },
 
-            // ====== قسم كأس العالم (تم التحديث هنا ليكون قريباً Soon) ======
+            // ====== قسم كأس العالم ======
             { id: 19, name: "كأس العالم 1", tag: "قريباً Soon", category: "worldcup", url: "https://vjs.zencdn.net/v/oceans.mp4?id=wc1-s1", url2: "https://vjs.zencdn.net/v/oceans.mp4?id=wc1-s2" },
             { id: 20, name: "كأس العالم 2", tag: "قريباً Soon", category: "worldcup", url: "https://vjs.zencdn.net/v/oceans.mp4?id=wc2-s1", url2: "https://vjs.zencdn.net/v/oceans.mp4?id=wc2-s2" },
-            { id: 21, name: "كأس العالم 3", tag: "قريباً Soon", category: "worldcup", url: "https://vjs.zencdn.net/v/oceans.mp4?id=wc3-s1", url2: "https://vjs.zencdn.net/v/oceans.mp4?id=wc3-s2" },
+            { id: 21, name: "كأس العالم 3", tag: "قريباً Soon", category: "worldcup", url: "https://vjs.zencdn.net/v/wc3-s1", url2: "https://vjs.zencdn.net/v/oceans.mp4?id=wc3-s2" },
             { id: 22, name: "كأس العالم 4", tag: "قريباً Soon", category: "worldcup", url: "https://vjs.zencdn.net/v/oceans.mp4?id=wc4-s1", url2: "https://vjs.zencdn.net/v/oceans.mp4?id=wc4-s2" },
             { id: 23, name: "كأس العالم 5", tag: "قريباً Soon", category: "worldcup", url: "https://vjs.zencdn.net/v/oceans.mp4?id=wc5-s1", url2: "https://vjs.zencdn.net/v/oceans.mp4?id=wc5-s2" },
             { id: 24, name: "كأس العالم 6", tag: "قريباً Soon", category: "worldcup", url: "https://vjs.zencdn.net/v/oceans.mp4?id=wc6-s1", url2: "https://vjs.zencdn.net/v/oceans.mp4?id=wc6-s2" }
@@ -560,7 +567,6 @@
         let currentServer = 1; 
         let hls = null;
 
-        // تهيئة مشغل Plyr
         const player = new Plyr('#live-player', {
             controls: ['play-large', 'play', 'progress', 'current-time', 'mute', 'volume', 'settings', 'fullscreen'],
             settings: ['quality', 'speed'],
@@ -599,10 +605,15 @@
                 
                 document.getElementById('welcome-box').style.display = 'none';
                 document.getElementById('player-box').style.display = 'block';
-                
                 document.getElementById('current-channel-title').innerText = channel.name;
                 
-                const streamUrl = currentServer === 1 ? channel.url : (channel.url2 || channel.url);
+                let streamUrl = currentServer === 1 ? channel.url : channel.url2;
+                
+                if (currentServer === 2 && (!streamUrl || streamUrl.trim() === "")) {
+                    stopAndClearPlayer();
+                    return;
+                }
+                
                 loadStream(streamUrl);
             }
         }
@@ -618,12 +629,26 @@
             }
         }
 
+        function stopAndClearPlayer() {
+            if (hls) {
+                hls.destroy();
+                hls = null;
+            }
+            const videoElement = document.getElementById('live-player');
+            player.stop();
+            videoElement.src = "";
+            videoElement.load();
+            document.getElementById('view-count').innerText = "0";
+            console.log("السيرفر 2 فارغ تماماً لهذه القناة، تم إيقاف المشغل.");
+        }
+
         function loadStream(url) {
             const videoElement = document.getElementById('live-player');
-            const isM3U8 = url.includes('m3u8');
+            const isM3U8 = url.includes('m3u8') || url.includes('stream?url=');
 
             if (hls) {
                 hls.destroy();
+                hls = null;
             }
 
             if (isM3U8) {
@@ -679,6 +704,8 @@
                 sectionTitle.innerText = "قنوات ألكاس";
             } else if (category === 'alwan') {
                 sectionTitle.innerText = "قنوات ألوان";
+            } else if (category === 'mbc') {
+                sectionTitle.innerText = "قنوات MBC";
             } else if (category === 'worldcup') {
                 sectionTitle.innerText = "قنوات كأس العالم";
             }
@@ -687,7 +714,6 @@
             renderChannels(filtered);
         }
 
-        // تهيئة الفلتر الافتراضي عند تحميل الصفحة ليظهر القسم الأول
         filterCategory('all', document.querySelector('.tab-btn'));
     </script>
 </body>
