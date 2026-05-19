@@ -529,7 +529,7 @@
             { id: 5, name: "Sports 5", tag: "Premium", category: "all", url: "https://pub-5d579cce1f8f4f8faf00f60ef6a6b791.r2.dev/Bein5.m3u8", url2: "https://vjs.zencdn.net/v/oceans.mp4?id=bein5" },
             { id: 6, name: "Sports 6", tag: "Premium", category: "all", url: "https://pub-5d579cce1f8f4f8faf00f60ef6a6b791.r2.dev/Bein6.m3u8", url2: "https://vjs.zencdn.net/v/oceans.mp4?id=bein6" },
 
-            // ====== قسم ألكاس (تم تحديث السيرفر 1 و السيرفر 2 بالكامل بالتسلسل) ======
+            // ====== قسم ألكاس ======
             { id: 7, name: "ألكاس 1", tag: "Alkass", category: "alkass", url: "https://bladisport.lovable.app/api/public/stream?url=https%3A%2F%2Fliveeu-gcp.alkassdigital.net%2Falkass1-p%2F20260519T133615Z%2Fmux_video_1080p_ts%2Findex-1.m3u8", url2: "https://bladisport.lovable.app/api/public/stream?url=https%3A%2F%2Fliveeu-gcp.alkassdigital.net%2Falkass1-p%2F20260519T133615Z%2Fmux_video_360p_ts%2Findex-1.m3u8" },
             { id: 8, name: "ألكاس 2", tag: "Alkass", category: "alkass", url: "https://bladisport.lovable.app/api/public/stream?url=https%3A%2F%2Fliveeu-gcp.alkassdigital.net%2Falkass2-p%2F20260515T031806Z%2Fmux_video_1080p_ts%2Findex-1.m3u8", url2: "https://bladisport.lovable.app/api/public/stream?url=https%3A%2F%2Fliveeu-gcp.alkassdigital.net%2Falkass2-p%2F20260515T031806Z%2Fmux_video_360p_ts%2Findex-1.m3u8" },
             { id: 9, name: "ألكاس 3", tag: "Alkass", category: "alkass", url: "https://bladisport.lovable.app/api/public/stream?url=https%3A%2F%2Fliveeu-gcp.alkassdigital.net%2Falkass3-p%2F20260515T025104Z%2Fmux_video_1080p_ts%2Findex-1.m3u8", url2: "https://bladisport.lovable.app/api/public/stream?url=https%3A%2F%2Fliveeu-gcp.alkassdigital.net%2Falkass3-p%2F20260515T025104Z%2Fmux_video_360p_ts%2Findex-1.m3u8" },
@@ -557,7 +557,7 @@
             // ====== قسم كأس العالم ======
             { id: 19, name: "كأس العالم 1", tag: "قريباً Soon", category: "worldcup", url: "https://vjs.zencdn.net/v/oceans.mp4?id=wc1-s1", url2: "https://vjs.zencdn.net/v/oceans.mp4?id=wc1-s2" },
             { id: 20, name: "كأس العالم 2", tag: "قريباً Soon", category: "worldcup", url: "https://vjs.zencdn.net/v/oceans.mp4?id=wc2-s1", url2: "https://vjs.zencdn.net/v/oceans.mp4?id=wc2-s2" },
-            { id: 21, name: "كأس العالم 3", tag: "قريباً Soon", category: "worldcup", url: "https://vjs.zencdn.net/v/wc3-s1", url2: "https://vjs.zencdn.net/v/oceans.mp4?id=wc3-s2" },
+            { id: 21, name: "كأس العالم 3", tag: "قريباً Soon", category: "worldcup", url: "https://vjs.zencdn.net/v/oceans.mp4?id=wc3-s1", url2: "https://vjs.zencdn.net/v/oceans.mp4?id=wc3-s2" },
             { id: 22, name: "كأس العالم 4", tag: "قريباً Soon", category: "worldcup", url: "https://vjs.zencdn.net/v/oceans.mp4?id=wc4-s1", url2: "https://vjs.zencdn.net/v/oceans.mp4?id=wc4-s2" },
             { id: 23, name: "كأس العالم 5", tag: "قريباً Soon", category: "worldcup", url: "https://vjs.zencdn.net/v/oceans.mp4?id=wc5-s1", url2: "https://vjs.zencdn.net/v/oceans.mp4?id=wc5-s2" },
             { id: 24, name: "كأس العالم 6", tag: "قريباً Soon", category: "worldcup", url: "https://vjs.zencdn.net/v/oceans.mp4?id=wc6-s1", url2: "https://vjs.zencdn.net/v/oceans.mp4?id=wc6-s2" }
@@ -574,6 +574,22 @@
                 quality: 'الجودة',
                 speed: 'السرعة',
                 normal: 'طبيعي'
+            }
+        });
+
+        // الاستماع لحدث الضغط على زر التكبير لتدوير الشاشة تلقائياً بالعرض
+        player.on('enterfullscreen', () => {
+            if (screen.orientation && screen.orientation.lock) {
+                screen.orientation.lock('landscape').catch(err => {
+                    console.log("قفل التدوير يتطلب تفاعل المستخدم أو متصفح متوافق:", err);
+                });
+            }
+        });
+
+        // الاستماع لحدث الخروج من تكبير الشاشة لإرجاع التدوير للوضع الطبيعي
+        player.on('exitfullscreen', () => {
+            if (screen.orientation && screen.orientation.unlock) {
+                screen.orientation.unlock();
             }
         });
 
