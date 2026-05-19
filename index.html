@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>GO SPORTS</title>
     
-    <!-- مكتبة مشغل Plyr الاحترافي CSS -->
     <link rel="stylesheet" href="https://cdn.plyr.io/3.7.8/plyr.css" />
 
     <style>
@@ -369,7 +368,7 @@
             <div class="player-details">
                 <span class="views-tag">👁️ <span id="view-count">120</span> مباشر</span>
                 <div class="channel-info">
-                    <h2 id="current-channel-title">القناة البنفسجية 1</h2>
+                    <h2 id="current-channel-title">Sports 1</h2>
                 </div>
             </div>
         </div>
@@ -384,7 +383,7 @@
                     </div>
                     <div class="tg-text-wrapper">
                         <span class="tg-top-label">TELEGRAM</span>
-                        <p class="tg-main-text">قناة التحديثات — GO SPORTS</p>
+                        <p class="tg-main-text">GO SPORTS</p>
                     </div>
                 </div>
                 <button class="tg-btn-join">انضم</button>
@@ -409,7 +408,7 @@
                 <span style="color:#71878b; font-size:12px;"><span id="channel-count">0</span> قنوات</span>
                 <div style="display: flex; align-items: center; gap: 4px;">
                     <span class="quality-tag">HQ</span>
-                    <h3 id="section-title">قنوات GO SPORTS</h3>
+                    <h3 id="section-title">القنوات البنفسجية IQ</h3>
                 </div>
             </div>
             
@@ -418,43 +417,40 @@
 
     </div>
 
-    <!-- مكتبة مشغل Plyr الاحترافي JavaScript -->
     <script src="https://cdn.plyr.io/3.7.8/plyr.polyfilled.js"></script>
-    <!-- مكتبة Hls.js لضمان تشغيل روابط m3u8 الحية في جميع المتصفحات -->
     <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
 
     <script>
-        // مصفوفة القنوات بعد تحديث روابط البنفسجية بالروابط المباشرة المرفقة بالتسلسل
         const channels = [
             // ====== قسم البنفسجية ======
-            { id: 1, name: "القناة البنفسجية 1", category: "all", url: "https://pub-5d579cce1f8f4f8faf00f60ef6a6b791.r2.dev/Bein1.m3u8" },
-            { id: 2, name: "القناة البنفسجية 2", category: "all", url: "https://pub-5d579cce1f8f4f8faf00f60ef6a6b791.r2.dev/Bein2.m3u8" },
-            { id: 3, name: "القناة البنفسجية 3", category: "all", url: "https://pub-5d579cce1f8f4f8faf00f60ef6a6b791.r2.dev/Bein3.m3u8" },
-            { id: 4, name: "القناة البنفسجية 4", category: "all", url: "https://pub-5d579cce1f8f4f8faf00f60ef6a6b791.r2.dev/Bein4.m3u8" },
-            { id: 5, name: "القناة البنفسجية 5", category: "all", url: "https://pub-5d579cce1f8f4f8faf00f60ef6a6b791.r2.dev/Bein5.m3u8" },
-            { id: 6, name: "القناة البنفسجية 6", category: "all", url: "https://pub-5d579cce1f8f4f8faf00f60ef6a6b791.r2.dev/Bein6.m3u8" },
+            { id: 1, name: "Sports 1", category: "all", url: "https://pub-5d579cce1f8f4f8faf00f60ef6a6b791.r2.dev/Bein1.m3u8" },
+            { id: 2, name: "Sports 2", category: "all", url: "https://pub-5d579cce1f8f4f8faf00f60ef6a6b791.r2.dev/Bein2.m3u8" },
+            { id: 3, name: "Sports 3", category: "all", url: "https://pub-5d579cce1f8f4f8faf00f60ef6a6b791.r2.dev/Bein3.m3u8" },
+            { id: 4, name: "Sports 4", category: "all", url: "https://pub-5d579cce1f8f4f8faf00f60ef6a6b791.r2.dev/Bein4.m3u8" },
+            { id: 5, name: "Sports 5", category: "all", url: "https://pub-5d579cce1f8f4f8faf00f60ef6a6b791.r2.dev/Bein5.m3u8" },
+            { id: 6, name: "Sports 6", category: "all", url: "https://pub-5d579cce1f8f4f8faf00f60ef6a6b791.r2.dev/Bein6.m3u8" },
 
-            // ====== قسم الكأس Alkass (روابط تجريبية قديمة) ======
-            { id: 7, name: "قناة الكأس 1", category: "alkass", url: "https://vjs.zencdn.net/v/oceans.mp4?id=7" },
-            { id: 8, name: "قناة الكأس 2", category: "alkass", url: "https://vjs.zencdn.net/v/oceans.mp4?id=8" },
-            { id: 9, name: "قناة الكأس 3", category: "alkass", url: "https://vjs.zencdn.net/v/oceans.mp4?id=9" },
-            { id: 10, name: "قناة الكأس 4", category: "alkass", url: "https://vjs.zencdn.net/v/oceans.mp4?id=10" },
-            { id: 11, name: "قناة الكأس 5", category: "alkass", url: "https://vjs.zencdn.net/v/oceans.mp4?id=11" },
-            { id: 12, name: "قناة الكأس 6", category: "alkass", url: "https://vjs.zencdn.net/v/oceans.mp4?id=12" },
+            // ====== قسم ألكاس ======
+            { id: 7, name: "ألكاس 1", category: "alkass", url: "https://vjs.zencdn.net/v/oceans.mp4?id=7" },
+            { id: 8, name: "ألكاس 2", category: "alkass", url: "https://vjs.zencdn.net/v/oceans.mp4?id=8" },
+            { id: 9, name: "ألكاس 3", category: "alkass", url: "https://vjs.zencdn.net/v/oceans.mp4?id=9" },
+            { id: 10, name: "ألكاس 4", category: "alkass", url: "https://vjs.zencdn.net/v/oceans.mp4?id=10" },
+            { id: 11, name: "ألكاس 5", category: "alkass", url: "https://vjs.zencdn.net/v/oceans.mp4?id=11" },
+            { id: 12, name: "ألكاس 6", category: "alkass", url: "https://vjs.zencdn.net/v/oceans.mp4?id=12" },
 
-            // ====== قسم ألوان Alwan (روابط تجريبية قديمة) ======
-            { id: 13, name: "قناة ألوان 1", category: "alwan", url: "https://vjs.zencdn.net/v/oceans.mp4?id=13" },
-            { id: 14, name: "قناة ألوان 2", category: "alwan", url: "https://vjs.zencdn.net/v/oceans.mp4?id=14" },
-            { id: 15, name: "قناة ألوان 3", category: "alwan", url: "https://vjs.zencdn.net/v/oceans.mp4?id=15" },
-            { id: 16, name: "قناة ألوان 4", category: "alwan", url: "https://vjs.zencdn.net/v/oceans.mp4?id=16" },
-            { id: 17, name: "قناة ألوان 5", category: "alwan", url: "https://vjs.zencdn.net/v/oceans.mp4?id=17" },
-            { id: 18, name: "قناة ألوان 6", category: "alwan", url: "https://vjs.zencdn.net/v/oceans.mp4?id=18" }
+            // ====== قسم ألوان ======
+            { id: 13, name: "ألوان 1", category: "alwan", url: "https://vjs.zencdn.net/v/oceans.mp4?id=13" },
+            { id: 14, name: "ألوان 2", category: "alwan", url: "https://vjs.zencdn.net/v/oceans.mp4?id=14" },
+            { id: 15, name: "ألوان 3", category: "alwan", url: "https://vjs.zencdn.net/v/oceans.mp4?id=15" },
+            { id: 16, name: "ألوان 4", category: "alwan", url: "https://vjs.zencdn.net/v/oceans.mp4?id=16" },
+            { id: 17, name: "ألوان 5", category: "alwan", url: "https://vjs.zencdn.net/v/oceans.mp4?id=17" },
+            { id: 18, name: "ألوان 6", category: "alwan", url: "https://vjs.zencdn.net/v/oceans.mp4?id=18" }
         ];
 
         let currentChannel = channels[0]; 
         let hls = null;
 
-        // تهيئة المشغل بأزرار تحكم كاملة
+        // تهيئة مشغل Plyr
         const player = new Plyr('#live-player', {
             controls: ['play-large', 'play', 'progress', 'current-time', 'mute', 'volume', 'settings', 'fullscreen'],
             settings: ['quality', 'speed'],
@@ -495,7 +491,6 @@
             }
         }
 
-        // دالة تشغيل البث الذكية والداعمة لـ m3u8
         function loadStream(url) {
             const videoElement = document.getElementById('live-player');
             const isM3U8 = url.includes('m3u8');
@@ -510,10 +505,8 @@
                     hls.loadSource(url);
                     hls.attachMedia(videoElement);
                     
-                    // ربط مستويات الجودة القادمة من ملف الـ m3u8 داخل ترس إعدادات Plyr تلقائياً
                     hls.on(Hls.Events.MANIFEST_PARSED, function (event, data) {
                         const availableQualities = hls.levels.map(l => l.height);
-                        // إضافة خيار التلقائي (0)
                         availableQualities.unshift(0); 
                         
                         player.config.quality = {
@@ -522,7 +515,7 @@
                             forced: true,
                             onChange: (hlsQuality) => {
                                 if (hlsQuality === 0) {
-                                    hls.currentLevel = -1; // جودة تلقائية حسب سرعة النت
+                                    hls.currentLevel = -1; 
                                 } else {
                                     hls.currentLevel = hls.levels.findIndex(l => l.height === hlsQuality);
                                 }
@@ -530,14 +523,13 @@
                         };
                     });
                 } else if (videoElement.canPlayType('application/vnd.apple.mpegurl')) {
-                    // لدعم متصفح السافاري على هواتف آيفون بشكل أصلي
                     videoElement.src = url;
                 }
             } else {
                 videoElement.src = url;
             }
 
-            player.play().catch(e => console.log("بانتظار تفاعل المستخدم أولاً لبدء البث"));
+            player.play().catch(e => console.log("بانتظار تفاعل المستخدم لبدء البث"));
             document.getElementById('view-count').innerText = Math.floor(Math.random() * 150) + 50;
         }
 
@@ -553,12 +545,13 @@
             buttonElement.classList.add('active');
 
             const sectionTitle = document.getElementById('section-title');
+            
             if (category === 'all') {
-                sectionTitle.innerText = "قنوات GO SPORTS";
+                sectionTitle.innerText = "القنوات البنفسجية IQ";
             } else if (category === 'alkass') {
-                sectionTitle.innerText = "قنوات Alkass";
+                sectionTitle.innerText = "قنوات ألكاس";
             } else if (category === 'alwan') {
-                sectionTitle.innerText = "قنوات Alwan";
+                sectionTitle.innerText = "قنوات ألوان";
             } else if (category === 'worldcup') {
                 sectionTitle.innerText = "قنوات كأس العالم";
             }
@@ -567,9 +560,10 @@
             renderChannels(filtered);
         }
 
-        // تشغيل أول قناة عند فتح الصفحة تلقائياً
+        // تشغيل الفلتر الأولي تلقائياً
         filterCategory('all', document.querySelector('.tab-btn'));
-        // تحميل القناة الأولى تلقائياً عند الإقلاع
+        
+        // تشغيل أول قناة تلقائياً بعد نصف ثانية من التحميل
         setTimeout(() => { playChannel(1); }, 500);
     </script>
 </body>
