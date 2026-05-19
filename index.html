@@ -5,8 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>GO SPORTS</title>
     
-    <link href="https://vjs.zencdn.net/8.10.0/video-js.css" rel="stylesheet" />
-    <script src="https://vjs.zencdn.net/8.10.0/video.min.js"></script>
+    <!-- مكتبة مشغل Plyr الاحترافي CSS -->
+    <link rel="stylesheet" href="https://cdn.plyr.io/3.7.8/plyr.css" />
 
     <style>
         body {
@@ -92,45 +92,22 @@
             overflow: hidden;
         }
 
-        .video-js {
-            width: 100% !important;
-            height: auto !important;
+        /* تخصيص ألوان مشغل Plyr ليتطابق مع هويتك البصرية */
+        :root {
+            --plyr-color-main: #00f2c3;
+            --plyr-video-control-color: #ffffff;
+            --plyr-video-controls-background: linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.75));
         }
-
-        .quality-container {
-            display: flex;
-            justify-content: center;
-            gap: 6px;
-            margin-top: 10px;
-            background: rgba(2, 30, 35, 0.5);
-            padding: 6px;
-            border-radius: 10px;
-            border: 1px solid rgba(113, 135, 139, 0.1);
-        }
-
-        .q-btn {
-            background-color: rgba(3, 42, 49, 0.8);
-            color: #71878b;
-            border: 1px solid rgba(113, 135, 139, 0.2);
-            padding: 5px 12px;
-            border-radius: 8px;
-            font-size: 11px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-
-        .q-btn.active {
-            background-color: #ffb800;
-            color: #021e23;
-            border-color: #ffb800;
+        
+        .plyr {
+            border-radius: 12px;
         }
 
         .player-details {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-top: 8px;
+            margin-top: 10px;
             padding: 0 4px;
         }
 
@@ -149,7 +126,6 @@
             color: #ffffff;
         }
 
-        /* تنسيق بانر التليجرام الاحترافي */
         .telegram-block {
             position: relative;
             z-index: 20;
@@ -387,15 +363,7 @@
 
         <div class="player-box">
             <div class="video-container">
-                <video id="live-player" class="video-js vjs-default-skin vjs-big-play-centered" controls preload="auto" playsinline webkit-playsinline>
-                    <source src="https://vjs.zencdn.net/v/oceans.mp4" type="video/mp4">
-                </video>
-            </div>
-
-            <div class="quality-container">
-                <button onclick="changeQuality('1080p', this)" class="q-btn">1080p FHD</button>
-                <button onclick="changeQuality('720p', this)" class="q-btn active">720p HD</button>
-                <button onclick="changeQuality('480p', this)" class="q-btn">480p SD</button>
+                <video id="live-player" playsinline controls></video>
             </div>
 
             <div class="player-details">
@@ -450,39 +418,51 @@
 
     </div>
 
+    <!-- مكتبة مشغل Plyr الاحترافي JavaScript -->
+    <script src="https://cdn.plyr.io/3.7.8/plyr.polyfilled.js"></script>
+    <!-- مكتبة Hls.js لضمان تشغيل روابط m3u8 الحية في جميع المتصفحات -->
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+
     <script>
+        // مصفوفة القنوات بعد تحديث روابط البنفسجية بالروابط المباشرة المرفقة بالتسلسل
         const channels = [
             // ====== قسم البنفسجية ======
-            { id: 1, name: "القناة البنفسجية 1", category: "all", sources: { "1080p": "https://pub-5d579cce1f8f4f8faf00f60ef6a6b791.r2.dev/Bein1.m3u8", "720p": "http://64.31.29.62:8080/live/22384631/61957661/332.m3u8?token=NEhsNTV3OUNMNVNlZnZs", "480p": "https://s2.marketplace-io-none-kode-steeeee.lol//b1_480/index.m3u8?token=6f51cf24c6b0518a3f46a03d428efd6a722afe47-f0cddfb8cf5e6ebbd90c2a19216b0a4a-1779209076-1779198276&remote=169.224.32.214" } },
-            { id: 2, name: "القناة البنفسجية 2", category: "all", sources: { "1080p": "https://pub-5d579cce1f8f4f8faf00f60ef6a6b791.r2.dev/Bein2.m3u8", "720p": "https://vjs.zencdn.net/v/oceans.mp4?id=2&q=720", "480p": "" } },
-            { id: 3, name: "القناة البنفسجية 3", category: "all", sources: { "1080p": "https://pub-5d579cce1f8f4f8faf00f60ef6a6b791.r2.dev/Bein3.m3u8", "720p": "https://vjs.zencdn.net/v/oceans.mp4?id=3&q=720", "480p": "https://s2.marketplace-io-none-kode-steeeee.lol/b3_480/index.m3u8?token=d2156afbc523f644d004b4eed1e8078dc1c13282-457970007951dd6badf48c6bcf298eb2-1779209290-1779198490&remote=169.224.32.214" } },
-            { id: 4, name: "القناة البنفسجية 4", category: "all", sources: { "1080p": "https://pub-5d579cce1f8f4f8faf00f60ef6a6b791.r2.dev/Bein4.m3u8", "720p": "https://vjs.zencdn.net/v/oceans.mp4?id=4&q=720", "480p": "https://vjs.zencdn.net/v/oceans.mp4?id=4&q=480" } },
-            { id: 5, name: "القناة البنفسجية 5", category: "all", sources: { "1080p": "https://pub-5d579cce1f8f4f8faf00f60ef6a6b791.r2.dev/Bein5.m3u8", "720p": "https://vjs.zencdn.net/v/oceans.mp4?id=5&q=720", "480p": "https://vjs.zencdn.net/v/oceans.mp4?id=5&q=480" } },
-            { id: 6, name: "القناة البنفسجية 6", category: "all", sources: { "1080p": "https://pub-5d579cce1f8f4f8faf00f60ef6a6b791.r2.dev/Bein6.m3u8", "720p": "https://vjs.zencdn.net/v/oceans.mp4?id=6&q=720", "480p": "https://vjs.zencdn.net/v/oceans.mp4?id=6&q=480" } },
+            { id: 1, name: "القناة البنفسجية 1", category: "all", url: "https://pub-5d579cce1f8f4f8faf00f60ef6a6b791.r2.dev/Bein1.m3u8" },
+            { id: 2, name: "القناة البنفسجية 2", category: "all", url: "https://pub-5d579cce1f8f4f8faf00f60ef6a6b791.r2.dev/Bein2.m3u8" },
+            { id: 3, name: "القناة البنفسجية 3", category: "all", url: "https://pub-5d579cce1f8f4f8faf00f60ef6a6b791.r2.dev/Bein3.m3u8" },
+            { id: 4, name: "القناة البنفسجية 4", category: "all", url: "https://pub-5d579cce1f8f4f8faf00f60ef6a6b791.r2.dev/Bein4.m3u8" },
+            { id: 5, name: "القناة البنفسجية 5", category: "all", url: "https://pub-5d579cce1f8f4f8faf00f60ef6a6b791.r2.dev/Bein5.m3u8" },
+            { id: 6, name: "القناة البنفسجية 6", category: "all", url: "https://pub-5d579cce1f8f4f8faf00f60ef6a6b791.r2.dev/Bein6.m3u8" },
 
-            // ====== قسم الكأس Alkass ======
-            { id: 7, name: "قناة الكأس 1", category: "alkass", sources: { "1080p": "https://vjs.zencdn.net/v/oceans.mp4?id=7&q=1080", "720p": "https://vjs.zencdn.net/v/oceans.mp4?id=7&q=720", "480p": "https://vjs.zencdn.net/v/oceans.mp4?id=7&q=480" } },
-            { id: 8, name: "قناة الكأس 2", category: "alkass", sources: { "1080p": "https://vjs.zencdn.net/v/oceans.mp4?id=8&q=1080", "720p": "https://vjs.zencdn.net/v/oceans.mp4?id=8&q=720", "480p": "https://vjs.zencdn.net/v/oceans.mp4?id=8&q=480" } },
-            { id: 9, name: "قناة الكأس 3", category: "alkass", sources: { "1080p": "https://vjs.zencdn.net/v/oceans.mp4?id=9&q=1080", "720p": "https://vjs.zencdn.net/v/oceans.mp4?id=9&q=720", "480p": "https://vjs.zencdn.net/v/oceans.mp4?id=9&q=480" } },
-            { id: 10, name: "قناة الكأس 4", category: "alkass", sources: { "1080p": "https://vjs.zencdn.net/v/oceans.mp4?id=10&q=1080", "720p": "https://vjs.zencdn.net/v/oceans.mp4?id=10&q=720", "480p": "https://vjs.zencdn.net/v/oceans.mp4?id=10&q=480" } },
-            { id: 11, name: "قناة الكأس 5", category: "alkass", sources: { "1080p": "https://vjs.zencdn.net/v/oceans.mp4?id=11&q=1080", "720p": "https://vjs.zencdn.net/v/oceans.mp4?id=11&q=720", "480p": "https://vjs.zencdn.net/v/oceans.mp4?id=11&q=480" } },
-            { id: 12, name: "قناة الكأس 6", category: "alkass", sources: { "1080p": "https://vjs.zencdn.net/v/oceans.mp4?id=12&q=1080", "720p": "https://vjs.zencdn.net/v/oceans.mp4?id=12&q=720", "480p": "https://vjs.zencdn.net/v/oceans.mp4?id=12&q=480" } },
+            // ====== قسم الكأس Alkass (روابط تجريبية قديمة) ======
+            { id: 7, name: "قناة الكأس 1", category: "alkass", url: "https://vjs.zencdn.net/v/oceans.mp4?id=7" },
+            { id: 8, name: "قناة الكأس 2", category: "alkass", url: "https://vjs.zencdn.net/v/oceans.mp4?id=8" },
+            { id: 9, name: "قناة الكأس 3", category: "alkass", url: "https://vjs.zencdn.net/v/oceans.mp4?id=9" },
+            { id: 10, name: "قناة الكأس 4", category: "alkass", url: "https://vjs.zencdn.net/v/oceans.mp4?id=10" },
+            { id: 11, name: "قناة الكأس 5", category: "alkass", url: "https://vjs.zencdn.net/v/oceans.mp4?id=11" },
+            { id: 12, name: "قناة الكأس 6", category: "alkass", url: "https://vjs.zencdn.net/v/oceans.mp4?id=12" },
 
-            // ====== قسم ألوان Alwan ======
-            { id: 13, name: "قناة ألوان 1", category: "alwan", sources: { "1080p": "https://s3.marketplace-io-none-kode-steeeee.lol//alwan_sport1/index.m3u8?token=0abc93d88343a65f6d48acfd3ebca4b6bded4efc-94ad1449ac635ab53388d61f979685f5-1779210464-1779199664&remote=169.224.32.214/alwan_sport1/index.m3u8?token=fe3dd45ec3e16f25c14199eac2b5c261389e4fcd-92ed328fcaf477e2748bd21779a43234-1779210464-1779199664&remote=169.224.32.214", "720p": "https://vjs.zencdn.net/v/oceans.mp4?id=13&q=720", "480p": "https://vjs.zencdn.net/v/oceans.mp4?id=13&q=480" } },
-            { id: 14, name: "قناة ألوان 2", category: "alwan", sources: { "1080p": "https://vjs.zencdn.net/v/oceans.mp4?id=14&q=1080", "720p": "https://vjs.zencdn.net/v/oceans.mp4?id=14&q=720", "480p": "https://vjs.zencdn.net/v/oceans.mp4?id=14&q=480" } },
-            { id: 15, name: "قناة ألوان 3", category: "alwan", sources: { "1080p": "https://vjs.zencdn.net/v/oceans.mp4?id=15&q=1080", "720p": "https://vjs.zencdn.net/v/oceans.mp4?id=15&q=720", "480p": "https://vjs.zencdn.net/v/oceans.mp4?id=15&q=480" } },
-            { id: 16, name: "قناة ألوان 4", category: "alwan", sources: { "1080p": "https://vjs.zencdn.net/v/oceans.mp4?id=16&q=1080", "720p": "https://vjs.zencdn.net/v/oceans.mp4?id=16&q=720", "480p": "https://vjs.zencdn.net/v/oceans.mp4?id=16&q=480" } },
-            { id: 17, name: "قناة ألوان 5", category: "alwan", sources: { "1080p": "https://vjs.zencdn.net/v/oceans.mp4?id=17&q=1080", "720p": "https://vjs.zencdn.net/v/oceans.mp4?id=17&q=720", "480p": "https://vjs.zencdn.net/v/oceans.mp4?id=17&q=480" } },
-            { id: 18, name: "قناة ألوان 6", category: "alwan", sources: { "1080p": "https://vjs.zencdn.net/v/oceans.mp4?id=18&q=1080", "720p": "https://vjs.zencdn.net/v/oceans.mp4?id=18&q=720", "480p": "https://vjs.zencdn.net/v/oceans.mp4?id=18&q=480" } }
+            // ====== قسم ألوان Alwan (روابط تجريبية قديمة) ======
+            { id: 13, name: "قناة ألوان 1", category: "alwan", url: "https://vjs.zencdn.net/v/oceans.mp4?id=13" },
+            { id: 14, name: "قناة ألوان 2", category: "alwan", url: "https://vjs.zencdn.net/v/oceans.mp4?id=14" },
+            { id: 15, name: "قناة ألوان 3", category: "alwan", url: "https://vjs.zencdn.net/v/oceans.mp4?id=15" },
+            { id: 16, name: "قناة ألوان 4", category: "alwan", url: "https://vjs.zencdn.net/v/oceans.mp4?id=16" },
+            { id: 17, name: "قناة ألوان 5", category: "alwan", url: "https://vjs.zencdn.net/v/oceans.mp4?id=17" },
+            { id: 18, name: "قناة ألوان 6", category: "alwan", url: "https://vjs.zencdn.net/v/oceans.mp4?id=18" }
         ];
 
         let currentChannel = channels[0]; 
+        let hls = null;
 
-        const player = videojs('live-player', {
-            fluid: true,
-            controls: true,
-            preload: 'auto'
+        // تهيئة المشغل بأزرار تحكم كاملة
+        const player = new Plyr('#live-player', {
+            controls: ['play-large', 'play', 'progress', 'current-time', 'mute', 'volume', 'settings', 'fullscreen'],
+            settings: ['quality', 'speed'],
+            i18n: {
+                quality: 'الجودة',
+                speed: 'السرعة',
+                normal: 'طبيعي'
+            }
         });
 
         function renderChannels(channelsToRender) {
@@ -511,39 +491,53 @@
             if (channel) {
                 currentChannel = channel;
                 document.getElementById('current-channel-title').innerText = channel.name;
-                
-                document.querySelectorAll('.q-btn').forEach(btn => btn.classList.remove('active'));
-                const defaultBtn = Array.from(document.querySelectorAll('.q-btn')).find(btn => btn.innerText.includes('720p'));
-                if(defaultBtn) defaultBtn.classList.add('active');
-
-                loadSource(channel.sources["720p"]);
+                loadStream(currentChannel.url);
             }
         }
 
-        function changeQuality(qualityKey, buttonElement) {
-            if (!currentChannel || !currentChannel.sources[qualityKey]) return;
-            
-            document.querySelectorAll('.q-btn').forEach(btn => btn.classList.remove('active'));
-            buttonElement.classList.add('active');
-
-            const currentTime = player.currentTime();
-            const isPaused = player.paused();
-
-            loadSource(currentChannel.sources[qualityKey]);
-
-            player.one('loadedmetadata', function() {
-                player.currentTime(currentTime);
-                if (!isPaused) player.play();
-            });
-        }
-
-        function loadSource(url) {
+        // دالة تشغيل البث الذكية والداعمة لـ m3u8
+        function loadStream(url) {
+            const videoElement = document.getElementById('live-player');
             const isM3U8 = url.includes('m3u8');
-            player.src({ 
-                src: url, 
-                type: isM3U8 ? 'application/x-mpegURL' : 'video/mp4' 
-            });
-            player.play().catch(e => console.log("User interaction required"));
+
+            if (hls) {
+                hls.destroy();
+            }
+
+            if (isM3U8) {
+                if (Hls.isSupported()) {
+                    hls = new Hls();
+                    hls.loadSource(url);
+                    hls.attachMedia(videoElement);
+                    
+                    // ربط مستويات الجودة القادمة من ملف الـ m3u8 داخل ترس إعدادات Plyr تلقائياً
+                    hls.on(Hls.Events.MANIFEST_PARSED, function (event, data) {
+                        const availableQualities = hls.levels.map(l => l.height);
+                        // إضافة خيار التلقائي (0)
+                        availableQualities.unshift(0); 
+                        
+                        player.config.quality = {
+                            default: 0,
+                            options: availableQualities,
+                            forced: true,
+                            onChange: (hlsQuality) => {
+                                if (hlsQuality === 0) {
+                                    hls.currentLevel = -1; // جودة تلقائية حسب سرعة النت
+                                } else {
+                                    hls.currentLevel = hls.levels.findIndex(l => l.height === hlsQuality);
+                                }
+                            }
+                        };
+                    });
+                } else if (videoElement.canPlayType('application/vnd.apple.mpegurl')) {
+                    // لدعم متصفح السافاري على هواتف آيفون بشكل أصلي
+                    videoElement.src = url;
+                }
+            } else {
+                videoElement.src = url;
+            }
+
+            player.play().catch(e => console.log("بانتظار تفاعل المستخدم أولاً لبدء البث"));
             document.getElementById('view-count').innerText = Math.floor(Math.random() * 150) + 50;
         }
 
@@ -573,8 +567,10 @@
             renderChannels(filtered);
         }
 
-        // تشغيل البث الأولي على قنوات البنفسجية
+        // تشغيل أول قناة عند فتح الصفحة تلقائياً
         filterCategory('all', document.querySelector('.tab-btn'));
+        // تحميل القناة الأولى تلقائياً عند الإقلاع
+        setTimeout(() => { playChannel(1); }, 500);
     </script>
 </body>
 </html>
