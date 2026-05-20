@@ -157,6 +157,7 @@
 
         .servers-container {
             display: flex;
+            flex-wrap: wrap;
             gap: 8px;
             margin-top: 10px;
             padding: 0 4px;
@@ -164,6 +165,7 @@
 
         .server-btn {
             flex: 1;
+            min-width: 75px;
             background-color: rgba(113, 135, 139, 0.1);
             color: #71878b;
             border: 1px solid rgba(113, 135, 139, 0.2);
@@ -173,6 +175,7 @@
             font-weight: bold;
             cursor: pointer;
             transition: all 0.2s ease;
+            text-align: center;
         }
 
         .server-btn.active {
@@ -461,6 +464,8 @@
             <div class="servers-container">
                 <button id="btn-srv1" onclick="changeServer(1)" class="server-btn active">Servers 1</button>
                 <button id="btn-srv2" onclick="changeServer(2)" class="server-btn">Servers 2</button>
+                <button id="btn-srv3" onclick="changeServer(3)" class="server-btn" style="display: none;">Servers 3</button>
+                <button id="btn-srv4" onclick="changeServer(4)" class="server-btn" style="display: none;">Servers 4</button>
             </div>
 
             <div class="player-details">
@@ -523,12 +528,12 @@
     <script>
         const channels = [
             // ====== قسم البنفسجية ======
-            { id: 1, name: "Sports 1", tag: "Premium", category: "all", url: "https://pub-5d579cce1f8f4f8faf00f60ef6a6b791.r2.dev/Bein1.m3u8", url2: "https://s1.marketplace-io-none-kode-steeeee.lol//b1_1080/tracks-v1a1/mono.m3u8?remote=169.224.32.214&token=e22daf2dc3f31a43ab19ffa1f14d30f131997bcd-10fb5b01605b8b54a7b2801cd7c6f36f-1779229472-1779218672" },
-            { id: 2, name: "Sports 2", tag: "Premium", category: "all", url: "https://pub-5d579cce1f8f4f8faf00f60ef6a6b791.r2.dev/Bein2.m3u8", url2: "https://s2.marketplace-io-none-kode-steeeee.lol/b2_480/tracks-v1a1/mono.m3u8?remote=169.224.32.214&token=b9736de23c8c0b7fc52bb8b8570bf52987024974-80ab329211dd2c7a1a13d8999d9dc975-1779230199-1779219399" },
-            { id: 3, name: "Sports 3", tag: "Premium", category: "all", url: "https://pub-5d579cce1f8f4f8faf00f60ef6a6b791.r2.dev/Bein3.m3u8", url2: "https://vjs.zencdn.net/v/oceans.mp4?id=bein3" },
-            { id: 4, name: "Sports 4", tag: "Premium", category: "all", url: "https://pub-5d579cce1f8f4f8faf00f60ef6a6b791.r2.dev/Bein4.m3u8", url2: "https://vjs.zencdn.net/v/oceans.mp4?id=bein4" },
-            { id: 5, name: "Sports 5", tag: "Premium", category: "all", url: "https://pub-5d579cce1f8f4f8faf00f60ef6a6b791.r2.dev/Bein5.m3u8", url2: "https://vjs.zencdn.net/v/oceans.mp4?id=bein5" },
-            { id: 6, name: "Sports 6", tag: "Premium", category: "all", url: "https://pub-5d579cce1f8f4f8faf00f60ef6a6b791.r2.dev/Bein6.m3u8", url2: "https://vjs.zencdn.net/v/oceans.mp4?id=bein6" },
+            { id: 1, name: "Sports 1", tag: "Premium", category: "all", url: "https://pub-5d579cce1f8f4f8faf00f60ef6a6b791.r2.dev/Bein1.m3u8", url2: "https://s1.marketplace-io-none-kode-steeeee.lol//b1_1080/tracks-v1a1/mono.m3u8?remote=169.224.32.214&token=e22daf2dc3f31a43ab19ffa1f14d30f131997bcd-10fb5b01605b8b54a7b2801cd7c6f36f-1779229472-1779218672", url3: "http://stream.mytvplus.net:7002/sport/ch1/ch1_1080.m3u8", url4: "http://stream.mytvplus.net:7002/sport/ch1/ch1_720.m3u8" },
+            { id: 2, name: "Sports 2", tag: "Premium", category: "all", url: "https://pub-5d579cce1f8f4f8faf00f60ef6a6b791.r2.dev/Bein2.m3u8", url2: "https://s2.marketplace-io-none-kode-steeeee.lol/b2_480/tracks-v1a1/mono.m3u8?remote=169.224.32.214&token=b9736de23c8c0b7fc52bb8b8570bf52987024974-80ab329211dd2c7a1a13d8999d9dc975-1779230199-1779219399", url3: "http://stream.mytvplus.net:7003/sport/ch2/ch2_1080.m3u8", url4: "http://stream.mytvplus.net:7003/sport/ch2/ch2_720.m3u8" },
+            { id: 3, name: "Sports 3", tag: "Premium", category: "all", url: "https://pub-5d579cce1f8f4f8faf00f60ef6a6b791.r2.dev/Bein3.m3u8", url2: "https://vjs.zencdn.net/v/oceans.mp4?id=bein3", url3: "http://stream.mytvplus.net:7004/sport/ch3/ch3_1080.m3u8", url4: "http://stream.mytvplus.net:7004/sport/ch3/ch3_720.m3u8" },
+            { id: 4, name: "Sports 4", tag: "Premium", category: "all", url: "https://pub-5d579cce1f8f4f8faf00f60ef6a6b791.r2.dev/Bein4.m3u8", url2: "https://vjs.zencdn.net/v/oceans.mp4?id=bein4", url3: "http://stream.mytvplus.net:7005/sport/ch4/ch4_1080.m3u8", url4: "http://stream.mytvplus.net:7005/sport/ch4/ch4_720.m3u8" },
+            { id: 5, name: "Sports 5", tag: "Premium", category: "all", url: "https://pub-5d579cce1f8f4f8faf00f60ef6a6b791.r2.dev/Bein5.m3u8", url2: "https://vjs.zencdn.net/v/oceans.mp4?id=bein5", url3: "http://stream.mytvplus.net:7006/sport/ch5/ch5_1080.m3u8", url4: "http://stream.mytvplus.net:7006/sport/ch5/ch5_720.m3u8" },
+            { id: 6, name: "Sports 6", tag: "Premium", category: "all", url: "https://pub-5d579cce1f8f4f8faf00f60ef6a6b791.r2.dev/Bein6.m3u8", url2: "https://vjs.zencdn.net/v/oceans.mp4?id=bein6", url3: "http://stream.mytvplus.net:7007/sport/ch6/ch6_1080.m3u8", url4: "http://stream.mytvplus.net:7007/sport/ch6/ch6_720.m3u8" },
 
             // ====== قسم ألكاس ======
             { id: 7, name: "ألكاس 1", tag: "Alkass", category: "alkass", url: "https://bladisport.lovable.app/api/public/stream?url=https%3A%2F%2Fliveeu-gcp.alkassdigital.net%2Falkass1-p%2F20260519T133615Z%2Fmux_video_1080p_ts%2Findex-1.m3u8", url2: "https://bladisport.lovable.app/api/public/stream?url=https%3A%2F%2Fliveeu-gcp.alkassdigital.net%2Falkass1-p%2F20260519T133615Z%2Fmux_video_360p_ts%2Findex-1.m3u8" },
@@ -627,9 +632,28 @@
                 document.getElementById('player-box').style.display = 'block';
                 document.getElementById('current-channel-title').innerText = channel.name;
                 
-                let streamUrl = currentServer === 1 ? channel.url : channel.url2;
+                const srv3Btn = document.getElementById('btn-srv3');
+                const srv4Btn = document.getElementById('btn-srv4');
                 
-                if (currentServer === 2 && (!streamUrl || streamUrl.trim() === "")) {
+                if (channel.category === 'all') {
+                    srv3Btn.style.display = 'block';
+                    srv4Btn.style.display = 'block';
+                } else {
+                    srv3Btn.style.display = 'none';
+                    srv4Btn.style.display = 'none';
+                    if (currentServer > 2) {
+                        currentServer = 1;
+                        setActiveServerButton(1);
+                    }
+                }
+
+                let streamUrl = "";
+                if (currentServer === 1) streamUrl = channel.url;
+                else if (currentServer === 2) streamUrl = channel.url2;
+                else if (currentServer === 3) streamUrl = channel.url3;
+                else if (currentServer === 4) streamUrl = channel.url4;
+                
+                if (!streamUrl || streamUrl.trim() === "") {
                     stopAndClearPlayer();
                     return;
                 }
@@ -640,13 +664,18 @@
 
         function changeServer(serverNumber) {
             currentServer = serverNumber;
-            
-            document.getElementById('btn-srv1').classList.toggle('active', serverNumber === 1);
-            document.getElementById('btn-srv2').classList.toggle('active', serverNumber === 2);
+            setActiveServerButton(serverNumber);
             
             if (currentChannel) {
                 playChannel(currentChannel.id);
             }
+        }
+
+        function setActiveServerButton(serverNumber) {
+            document.getElementById('btn-srv1').classList.toggle('active', serverNumber === 1);
+            document.getElementById('btn-srv2').classList.toggle('active', serverNumber === 2);
+            document.getElementById('btn-srv3').classList.toggle('active', serverNumber === 3);
+            document.getElementById('btn-srv4').classList.toggle('active', serverNumber === 4);
         }
 
         function stopAndClearPlayer() {
@@ -659,7 +688,7 @@
             videoElement.src = "";
             videoElement.load();
             document.getElementById('view-count').innerText = "0";
-            console.log("السيرفر 2 فارغ تماماً لهذه القناة، تم إيقاف المشغل.");
+            console.log("السيرفر فارغ تماماً لهذه القناة، تم إيقاف المشغل.");
         }
 
         function loadStream(url) {
