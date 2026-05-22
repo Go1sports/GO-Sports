@@ -544,7 +544,7 @@
             { id: 12, name: "ألكاس 6", tag: "Alkass", category: "alkass", url: "https://bladisport.lovable.app/api/public/stream?url=https%3A%2F%2Fliveeu-gcp.alkassdigital.net%2Falkass6-p%2F20260515T032106Z%2Fmux_video_1080p_ts%2Findex-1.m3u8", url2: "https://bladisport.lovable.app/api/public/stream?url=https%3A%2F%2Fliveeu-gcp.alkassdigital.net%2Falkass6-p%2F20260515T032106Z%2Fmux_video_360p_ts%2Findex-1.m3u8" },
 
             // ====== قسم ألوان ======
-            { id: 13, name: "ألوان 1", tag: "Alwan", category: "alwan", url: "http://135.125.196.66/alwan_1_hd/tracks-v1a1/mono.m3u8?token=9758c547b2baa99249de9171d1f45c6bbdbae697-167ae92a3aa01872d4eb4a007fa4cca7-1779284342-1779255542-169.224.32.214", url2: "http://135.125.196.66/alwan_1_sd/tracks-v1a1/mono.m3u8?token=83efbe35310c8210a635abec3adfff84bd2a6e7d-ceb21aafea44cbc3a88ed3b3a0746f20-1779283774-1779254974-169.224.32.214" },
+            { id: 13, name: "ألوان 1", tag: "Alwan", category: "alwan", url: "https://stream.camcloud.stream/stream/8dd8ad49bb05/playlist.m3u8", url2: "https://s1.marketplace-io-none-kode-steeeee.lol//alwan_sport1fhd/tracks-v1a1/mono.m3u8?remote=169.224.32.214&token=f28322a290042b0ad4e097543e409cfa74b69579-05f304137364b39e258162559cbb1d5c-1779448422-1779437622" },
             { id: 14, name: "ألوان 2", tag: "Alwan", category: "alwan", url: "http://135.125.196.66/alwan_2_hd/tracks-v1a1/mono.m3u8?token=9758c547b2baa99249de9171d1f45c6bbdbae697-167ae92a3aa01872d4eb4a007fa4cca7-1779284342-1779255542-169.224.32.214", url2: "http://135.125.196.66/alwan_2_sd/tracks-v1a1/mono.m3u8?token=23f165efa247f55553b172d2b748b3d84bb216d4-88e7af9a7a3515e3af0eb9c06f89a89c-1779283938-1779255138-169.224.32.214" },
             { id: 15, name: "ألوان 3", tag: "Alwan", category: "alwan", url: "http://135.125.196.66/alwan_3_hd/tracks-v1a1/mono.m3u8?token=9758c547b2baa99249de9171d1f45c6bbdbae697-167ae92a3aa01872d4eb4a007fa4cca7-1779284342-1779255542-169.224.32.214", url2: "http://135.125.196.66/alwan_3_sd/tracks-v1a1/mono.m3u8?token=23f165efa247f55553b172d2b748b3d84bb216d4-88e7af9a7a3515e3af0eb9c06f89a89c-1779283938-1779255138-169.224.32.214" },
             { id: 16, name: "ألوان 4", tag: "Alwan", category: "alwan", url: "http://135.125.196.66/alwan_4_hd/tracks-v1a1/mono.m3u8?token=9758c547b2baa99249de9171d1f45c6bbdbae697-167ae92a3aa01872d4eb4a007fa4cca7-1779284342-1779255542-169.224.32.214", url2: "http://135.125.196.66/alwan_4_sd/tracks-v1a1/mono.m3u8?token=23f165efa247f55553b172d2b748b3d84bb216d4-88e7af9a7a3515e3af0eb9c06f89a89c-1779283938-1779255138-169.224.32.214" },
@@ -691,9 +691,10 @@
             console.log("السيرفر فارغ تماماً لهذه القناة، تم إيقاف المشغل.");
         }
 
+        // دالة تشغيل البث المحدثة لحل مشكلة (الصوت بدون صورة) وإعادة المزامنة التلقائية
         function loadStream(url) {
             const videoElement = document.getElementById('live-player');
-            const isM3U8 = url.includes('m3u8') || url.includes('stream?url=');
+            const isM3U8 = url.toLowerCase().includes('m3u8') || url.toLowerCase().includes('stream?url=');
 
             if (hls) {
                 hls.destroy();
@@ -702,7 +703,17 @@
 
             if (isM3U8) {
                 if (Hls.isSupported()) {
-                    hls = new Hls();
+                    // تكوين متقدم لإجبار المتصفح على دمج فك ترميز الصوت والفيديو ومعالجة HEVC برمجياً
+                    hls = new Hls({
+                        maxMaxBufferLength: 15,
+                        enableWorker: true,
+                        lowLatencyMode: true,
+                        backBufferLength: 0,
+                        enableSoftwareAES: true,
+                        forceKeyFrameOnDiscontinuity: true,
+                        overrideDecoderCodecTypes: true
+                    });
+                    
                     hls.loadSource(url);
                     hls.attachMedia(videoElement);
                     
@@ -723,7 +734,32 @@
                             }
                         };
                     });
+
+                    // المراقبة البرمجية للأخطاء لإجبار الصورة المتأخرة على الظهور ومزامنتها مع الصوت
+                    hls.on(Hls.Events.ERROR, function (event, data) {
+                        if (data.fatal) {
+                            switch (data.type) {
+                                case Hls.ErrorTypes.NETWORK_ERROR:
+                                    console.log("خطأ في الشبكة، محاولة إعادة الاتصال بالسيرفر...");
+                                    hls.startLoad();
+                                    break;
+                                case Hls.ErrorTypes.MEDIA_ERROR:
+                                    console.log("خطأ في فك ترميز الصورة/الصوت، جاري المعالجة وإعادة المزامنة...");
+                                    hls.recoverMediaError();
+                                    break;
+                                default:
+                                    console.log("خطأ غير متوقع، جاري إعادة تحميل القناة...");
+                                    hls.destroy();
+                                    if (currentChannel) {
+                                        setTimeout(() => { playChannel(currentChannel.id); }, 1500);
+                                    }
+                                    break;
+                            }
+                        }
+                    });
+
                 } else if (videoElement.canPlayType('application/vnd.apple.mpegurl')) {
+                    // دعم هواتف الآيفون (سفاري يعالج المشكلة داخلياً)
                     videoElement.src = url;
                 }
             } else {
