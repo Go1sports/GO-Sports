@@ -155,35 +155,6 @@
             border-radius: 12px;
         }
 
-        .servers-container {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-            margin-top: 10px;
-            padding: 0 4px;
-        }
-
-        .server-btn {
-            flex: 1;
-            min-width: 75px;
-            background-color: rgba(113, 135, 139, 0.1);
-            color: #71878b;
-            border: 1px solid rgba(113, 135, 139, 0.2);
-            padding: 6px;
-            border-radius: 8px;
-            font-size: 12px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            text-align: center;
-        }
-
-        .server-btn.active {
-            background-color: rgba(0, 242, 195, 0.15);
-            color: #00f2c3;
-            border-color: #00f2c3;
-        }
-
         .player-details {
             display: flex;
             justify-content: space-between;
@@ -452,17 +423,13 @@
                 </svg>
             </div>
             <h3>اختر قناة للبدء</h3>
-            <p id="loading-text">جاري تحميل القنوات من السيرفر المباشر...</p>
+            <p>تصفح القنوات أدناه واضغط على أي واحدة لتبدأ المشاهدة فوراً</p>
             <span class="welcome-status">البث مباشر الآن</span>
         </div>
 
         <div id="player-box" class="player-box">
             <div class="video-container">
                 <video id="live-player" playsinline controls></video>
-            </div>
-
-            <div class="servers-container">
-                <button id="btn-srv1" onclick="changeServer(1)" class="server-btn active">السيرفر الرئيسي</button>
             </div>
 
             <div class="player-details">
@@ -491,8 +458,7 @@
         </div>
 
         <div class="categories-block">
-            <div id="categories-tabs" class="categories-tabs">
-                <button onclick="filterCategory('all', this)" class="tab-btn active">كل القنوات</button>
+            <div class="categories-tabs" id="tabs-container">
                 </div>
         </div>
 
@@ -504,8 +470,8 @@
             <div class="section-header">
                 <span style="color:#71878b; font-size:12px;"><span id="channel-count">0</span> قنوات</span>
                 <div style="display: flex; align-items: center; gap: 4px;">
-                    <span class="quality-tag">LIVE</span>
-                    <h3 id="section-title">كل القنوات المتاحة</h3>
+                    <span class="quality-tag">HQ</span>
+                    <h3 id="section-title">جاري تحميل الأقسام...</h3>
                 </div>
             </div>
             
@@ -518,81 +484,115 @@
     <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
 
     <script>
-        // دمج بيانات الـ API المباشرة
-        const serverUrl = "http://akar13.xyz";
-        const username = "4750034742512197";
-        const password = "3177932697568638";
+        // ======= إعدادات سيرفر الإكستريم الخاص بك =======
+        const HOST = "http://vlc.news:9000";
+        const USER = "AhmadAboHamor";
+        const PASS = "Ff078Dd079Rr077";
 
-        // الروابط المباشرة لجلب الفئات والقنوات
-        const categoriesApi = `${serverUrl}/player_api.php?username=${username}&password=${password}&action=get_live_categories`;
-        const streamsApi = `${serverUrl}/player_api.php?username=${username}&password=${password}&action=get_live_streams`;
-
-        let channels = []; // سيتم ملؤها من الـ API
+        let allFetchedChannels = []; 
         let currentChannel = null; 
         let hls = null;
 
         const player = new Plyr('#live-player', {
             controls: ['play-large', 'play', 'progress', 'current-time', 'mute', 'volume', 'settings', 'fullscreen'],
             settings: ['quality', 'speed'],
-            i18n: { quality: 'الجودة', speed: 'السرعة', normal: 'طبيعي' }
+            i18n: {
+                quality: 'الجودة',
+                speed: 'السرعة',
+                normal: 'طبيعي'
+            }
         });
 
-        // جلب البيانات عند فتح الصفحة مباشرة
-        window.onload = function() {
-            loadServerData();
-        };
-
-        function loadServerData() {
-            // 1. جلب فئات القنوات وتحديث الأزرار العليا
-            fetch(categoriesApi)
-                .then(res => res.json())
-                .then(categoriesData => {
-                    const tabsContainer = document.getElementById('categories-tabs');
-                    categoriesData.forEach(cat => {
-                        const btn = document.createElement('button');
-                        btn.className = "tab-btn";
-                        btn.innerText = cat.category_name;
-                        btn.onclick = function() { filterCategory(cat.category_id, this); };
-                        tabsContainer.appendChild(btn);
-                    });
-                }).catch(err => console.error("خطأ في تحميل الفئات:", err));
-
-            // 2. جلب القنوات المباشرة كاملة بناءً على السيرفر
-            fetch(streamsApi)
-                .then(res => res.json())
-                .then(streamsData => {
-                    // تحويل وتجهيز البيانات لتتوافق مع تصميمك المتميز
-                    channels = streamsData.map(stream => ({
-                        id: stream.stream_id,
-                        name: stream.name,
-                        tag: stream.stream_type.toUpperCase(),
-                        category: stream.category_id,
-                        // بناء رابط تشغيل الـ m3u8 المباشر لكل قناة تلقائياً
-                        url: `${serverUrl}/live/${username}/${password}/${stream.stream_id}.m3u8`
-                    }));
-
-                    document.getElementById('loading-text').innerText = "تصفح القنوات أدناه واضغط على أي واحدة لتبدأ المشاهدة فوراً";
-                    renderChannels(channels);
-                })
-                .catch(err => {
-                    console.error("خطأ في تحميل القنوات:", err);
-                    document.getElementById('loading-text').innerText = "فشل تحميل القنوات، يرجى التحقق من جدار الحماية (CORS).";
+        player.on('enterfullscreen', () => {
+            if (screen.orientation && screen.orientation.lock) {
+                screen.orientation.lock('landscape').catch(err => {
+                    console.log("قفل التدوير يتطلب تفاعل المستخدم أو متصفح متوافق:", err);
                 });
+            }
+        });
+
+        player.on('exitfullscreen', () => {
+            if (screen.orientation && screen.orientation.unlock) {
+                screen.orientation.unlock();
+            }
+        });
+
+        // 1. جلب الأقسام من السيرفر تلقائياً عند فتح الصفحة
+        async function fetchCategories() {
+            const url = `${HOST}/player_api.php?username=${USER}&password=${PASS}&action=get_live_categories`;
+            try {
+                const response = await fetch(url);
+                const categories = await response.json();
+                renderTabs(categories);
+            } catch (e) {
+                console.error("Error fetching categories", e);
+                document.getElementById('section-title').innerText = "خطأ في الاتصال بالسيرفر";
+            }
         }
 
+        // 2. توزيع الأقسام المجلوبة في الـ Tabs التنسيقية للموقع
+        function renderTabs(categories) {
+            const container = document.getElementById('tabs-container');
+            container.innerHTML = '';
+
+            categories.forEach((cat, index) => {
+                const btn = document.createElement('button');
+                btn.className = `tab-btn ${index === 0 ? 'active' : ''}`;
+                btn.innerText = cat.category_name;
+                btn.setAttribute('data-id', cat.category_id);
+                btn.onclick = function() {
+                    const buttons = document.querySelectorAll('.tab-btn');
+                    buttons.forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    
+                    document.getElementById('section-title').innerText = cat.category_name;
+                    fetchChannels(cat.category_id);
+                };
+                container.appendChild(btn);
+            });
+
+            if (categories.length > 0) {
+                document.getElementById('section-title').innerText = categories[0].category_name;
+                fetchChannels(categories[0].category_id);
+            }
+        }
+
+        // 3. جلب قنوات القسم المختار تلقائياً
+        async function fetchChannels(categoryId) {
+            const gridContainer = document.getElementById('channels-grid');
+            gridContainer.innerHTML = '<p style="text-align:center; width:100%; color:#71878b;">جاري تحميل القنوات...</p>';
+            document.getElementById('channel-count').innerText = "0";
+            
+            const url = `${HOST}/player_api.php?username=${USER}&password=${PASS}&action=get_live_streams&category_id=${categoryId}`;
+            try {
+                const response = await fetch(url);
+                allFetchedChannels = await response.json();
+                renderChannels(allFetchedChannels);
+            } catch (e) {
+                console.error("Error fetching channels", e);
+                gridContainer.innerHTML = '<p style="text-align:center; width:100%; color:#ff3b3b;">فشل تحميل القنوات</p>';
+            }
+        }
+
+        // 4. عرض القنوات داخل شبكة الـ Grid بالتصميم الأصلي
         function renderChannels(channelsToRender) {
             const gridContainer = document.getElementById('channels-grid');
             gridContainer.innerHTML = '';
             document.getElementById('channel-count').innerText = channelsToRender.length;
 
+            if(channelsToRender.length === 0) {
+                gridContainer.innerHTML = '<p style="text-align:center; width:100%; color:#71878b;">لا توجد قنوات في هذا القسم</p>';
+                return;
+            }
+
             channelsToRender.forEach(channel => {
                 const card = document.createElement('div');
                 card.className = "channel-card";
-                card.onclick = function() { playChannel(channel.id); };
+                card.onclick = function() { playChannel(channel); };
                 card.innerHTML = `
                     <div class="fav-star">☆</div>
                     <div class="card-info">
-                        <span>${channel.tag}</span>
+                        <span>${channel.stream_type || 'LIVE'}</span>
                         <p>${channel.name}</p>
                     </div>
                     <div class="play-button-circle">▶</div>
@@ -601,21 +601,26 @@
             });
         }
 
-        function playChannel(id) {
-            const channel = channels.find(c => c.id === id);
+        // 5. تشغيل القناة وبناء الرابط بالـ stream_id التابع لها تلقائياً من السيرفر الرئيسي
+        function playChannel(channel) {
             if (channel) {
                 currentChannel = channel;
                 
                 document.getElementById('welcome-box').style.display = 'none';
                 document.getElementById('player-box').style.display = 'block';
                 document.getElementById('current-channel-title').innerText = channel.name;
+
+                let targetStreamId = channel.stream_id;
                 
-                if (!channel.url || channel.url.trim() === "") {
+                if (!targetStreamId) {
                     stopAndClearPlayer();
                     return;
                 }
+
+                // جلب رابط البث المباشر المباشر من السيرفر الرئيسي مباشرة
+                const streamUrl = `${HOST}/live/${USER}/${PASS}/${targetStreamId}.m3u8`;
                 
-                loadStream(channel.url);
+                loadStream(streamUrl);
             }
         }
 
@@ -633,60 +638,85 @@
 
         function loadStream(url) {
             const videoElement = document.getElementById('live-player');
+            const isM3U8 = url.toLowerCase().includes('m3u8');
 
             if (hls) {
                 hls.destroy();
                 hls = null;
             }
 
-            if (Hls.isSupported()) {
-                hls = new Hls({
-                    maxMaxBufferLength: 15,
-                    enableWorker: true,
-                    lowLatencyMode: true
-                });
-                
-                hls.loadSource(url);
-                hls.attachMedia(videoElement);
-                
-                hls.on(Hls.Events.MANIFEST_PARSED, function () {
-                    player.play().catch(e => console.log("بانتظار تفاعل المستخدم"));
-                });
+            if (isM3U8) {
+                if (Hls.isSupported()) {
+                    hls = new Hls({
+                        maxMaxBufferLength: 15,
+                        enableWorker: true,
+                        lowLatencyMode: true,
+                        backBufferLength: 0,
+                        enableSoftwareAES: true,
+                        forceKeyFrameOnDiscontinuity: true,
+                        overrideDecoderCodecTypes: true
+                    });
+                    
+                    hls.loadSource(url);
+                    hls.attachMedia(videoElement);
+                    
+                    hls.on(Hls.Events.MANIFEST_PARSED, function (event, data) {
+                        const availableQualities = hls.levels.map(l => l.height);
+                        availableQualities.unshift(0); 
+                        
+                        player.config.quality = {
+                            default: 0,
+                            options: availableQualities,
+                            forced: true,
+                            onChange: (hlsQuality) => {
+                                if (hlsQuality === 0) {
+                                    hls.currentLevel = -1; 
+                                } else {
+                                    hls.currentLevel = hls.levels.findIndex(l => l.height === hlsQuality);
+                                }
+                            }
+                        };
+                    });
 
-                hls.on(Hls.Events.ERROR, function (event, data) {
-                    if (data.fatal) {
-                        if (data.type === Hls.ErrorTypes.NETWORK_ERROR) {
-                            hls.startLoad();
-                        } else if (data.type === Hls.ErrorTypes.MEDIA_ERROR) {
-                            hls.recoverMediaError();
+                    hls.on(Hls.Events.ERROR, function (event, data) {
+                        if (data.fatal) {
+                            switch (data.type) {
+                                case Hls.ErrorTypes.NETWORK_ERROR:
+                                    hls.startLoad();
+                                    break;
+                                case Hls.ErrorTypes.MEDIA_ERROR:
+                                    hls.recoverMediaError();
+                                    break;
+                                default:
+                                    hls.destroy();
+                                    if (currentChannel) {
+                                        setTimeout(() => { playChannel(currentChannel); }, 1500);
+                                    }
+                                    break;
+                            }
                         }
-                    }
-                });
-            } else if (videoElement.canPlayType('application/vnd.apple.mpegurl')) {
+                    });
+
+                } else if (videoElement.canPlayType('application/vnd.apple.mpegurl')) {
+                    videoElement.src = url;
+                }
+            } else {
                 videoElement.src = url;
-                player.play().catch(e => console.log("بانتظار تفاعل المستخدم"));
             }
 
+            player.play().catch(e => console.log("بانتظار تفاعل المستخدم لبدء البث"));
             document.getElementById('view-count').innerText = Math.floor(Math.random() * 150) + 50;
         }
 
+        // 6. فلترة فورية بالبحث داخل القسم المفتوح حالياً
         function searchChannels() {
             const query = document.getElementById('searchBar').value.toLowerCase();
-            const filtered = channels.filter(c => c.name.toLowerCase().includes(query));
+            const filtered = allFetchedChannels.filter(c => c.name.toLowerCase().includes(query));
             renderChannels(filtered);
         }
 
-        function filterCategory(category, buttonElement) {
-            const buttons = document.querySelectorAll('.tab-btn');
-            buttons.forEach(btn => btn.classList.remove('active'));
-            buttonElement.classList.add('active');
-
-            const sectionTitle = document.getElementById('section-title');
-            sectionTitle.innerText = buttonElement.innerText;
-
-            const filtered = (category === 'all') ? channels : channels.filter(c => c.category === category);
-            renderChannels(filtered);
-        }
+        // بدء التشغيل التلقائي لجلب البيانات عند فتح الصفحة
+        fetchCategories();
     </script>
 </body>
 </html>
